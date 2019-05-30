@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+puts "Input your email: "
+email = gets.chomp
+user = User.find_by_email(email)
+
+puts "What do you want to do?"
+puts "0. Create shortened URL"
+puts "1. Visit shortened URL"
+choice = gets.chomp.to_i
+
+if choice == 0
+  puts "Type in your long url"
+  url = gets.chomp
+  short_url = ShortenedUrl.create!(user, url)
+  short_url.save
+  puts "Short url is: #{short_url.short_url}"
+  puts "Goodbye!"
+else
+  puts "Type in the shortened URL"
+  url = gets.chomp
+  shortened_url = ShortenedUrl.find_by_short_url(url)
+  Visit.record_visit!(user, shortened_url).save
+
+  puts "Launching #{shortened_url.long_url}"
+  puts "Goodbye!"
+end
